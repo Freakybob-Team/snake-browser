@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, QLineEdit, QMess
 from PyQt5 import QtWebEngineWidgets
 from PyQt5.QtCore import QUrl
 import sys
+import re
 
 print("Snake Browser is starting up! Have fun :) - Licensed under GPL-3.0, by Freakybob Team.")
 print("""  IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
@@ -26,11 +27,17 @@ def makeit(self, rawhtml, newurl):
         self.view = QtWebEngineWidgets.QWebEngineView()
         self.view.setHtml(rawhtml, baseUrl=QUrl(newurl))
         self.setCentralWidget(self.view)
+def changeTitle(self, title):
+    if title:
+        if title == "Snake Browser, by Freakybob Team.":
+            self.setWindowTitle("Snake Browser, by Freakybob Team.")
+        else:
+            self.setWindowTitle(f"{title} - Snake Browser, by Freakybob Team.")
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Snake Browser - By Freakybob Team")
+        changeTitle(self, title="FreakySearch")
         makeit(self, rawhtml, newurl=home)
         reload_action = QAction("Reload", self)
         reload_action.triggered.connect(self.reload_page)
@@ -67,15 +74,21 @@ class MainWindow(QMainWindow):
         if not inputed.startswith("http"):
             newurl = "https://" + self.urlbar.text()
         else:
-            newurl = self.urlbar.text()
+            newurl = inputed
         try:
             response = requests.get(newurl)
         except Exception as e:
             QMessageBox.warning(self, "Error accessing URL", f"URL not found. More information: {str(e)}")
             return
         rawhtml = response.text
+        match = re.search(r"<title>(.*?)</title>", rawhtml, re.IGNORECASE | re.DOTALL)
+        if match:
+            title = match.group(1).strip()
+            changeTitle(self, title)
+            changeTitle(self, title)
+        else:
+           changeTitle(self, title="Snake Browser, by Freakybob Team.")
         makeit(self, rawhtml, newurl)
-        print(rawhtml)
 
 app = QApplication(sys.argv)
 
