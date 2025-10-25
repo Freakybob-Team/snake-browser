@@ -3,13 +3,25 @@
     2025 Freakybob Team.
     For information on the LICENSE, read LICENSE or IMPORTANT_LICENSE.
 """
+
 import requests
 from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, QLineEdit, QMessageBox
 from PyQt5 import QtWebEngineWidgets
 from PyQt5.QtCore import QUrl
 import sys
 import re
-
+import os
+gpc_use = None
+if not os.path.exists("settings/"):
+    os.mkdir("settings")
+if not os.path.exists("settings/gpc.txt"):
+    with open("settings/gpc.txt", "w") as file:
+        file.write("1")
+with open("settings/gpc.txt") as file:
+    if file.read() == "1":
+        gpc_use = True
+    if file.read() == "0":
+        gpc_use = False
 print("Snake Browser is starting up! Have fun :) - Licensed under GPL-3.0, by Freakybob Team.")
 print("""  IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
 WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS
@@ -21,7 +33,7 @@ PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
 EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.""")
 home = "https://search.freakybob.site"
-response = requests.get(home)
+response = requests.get(home, headers={"Sec-GPC": "1"})
 rawhtml = response.text
 def makeit(self, rawhtml, newurl):
         self.view = QtWebEngineWidgets.QWebEngineView()
@@ -47,6 +59,8 @@ class MainWindow(QMainWindow):
         forward_action.triggered.connect(self.forward)
         home_action = QAction("Home", self)
         home_action.triggered.connect(self.home)
+        gpc_action = QAction("Toggle GPC", self)
+        gpc_action.triggered.connect(self.gpc)
         self.urlbar = QLineEdit()
         self.urlbar.returnPressed.connect(self.navigate_to_url)
         toolbar = self.addToolBar("TBar")
@@ -55,6 +69,7 @@ class MainWindow(QMainWindow):
         toolbar.addAction(back_action)
         toolbar.addAction(forward_action)
         toolbar.addAction(home_action)
+        toolbar.addAction(gpc_action)
         #view = QtWebEngineWidgets.QWebEngineView()
         #view.setHtml(rawhtml, baseUrl=QUrl("https://freakybob.site/"))
         #self.setCentralWidget(view)
@@ -65,8 +80,24 @@ class MainWindow(QMainWindow):
         self.view.back()
     def forward(self):
         self.view.forward()
+    def gpc(self):
+        global gpc_use
+        if gpc_use == False:
+            gpc_use = True
+            QMessageBox.warning(self, "GPC Setting Changed", "Your GPC setting has changed to on.")
+            with open("settings/gpc.txt", "w") as file:
+                file.write("1")
+        else:
+            gpc_use = False
+            QMessageBox.warning(self, "GPC Setting Changed", "Your GPC setting has changed to off.")
+            with open("settings/gpc.txt", "w") as file:
+                file.write("0")
+        self.view.reload()
     def home(self):
-        response = requests.get(home)
+        if gpc_use == True:
+            response = requests.get(home, headers={"Sec-GPC": "1"})
+        else:
+            response = requests.get(home)
         rawhtml = response.text
         makeit(self, rawhtml, home)
     def navigate_to_url(self):
@@ -76,7 +107,10 @@ class MainWindow(QMainWindow):
         else:
             newurl = inputed
         try:
-            response = requests.get(newurl)
+            if gpc_use == True:
+                response = requests.get(newurl, headers={"Sec-GPC": "1"})
+            else:
+                response = requests.get(newurl)
         except Exception as e:
             QMessageBox.warning(self, "Error accessing URL", f"URL not found. More information: {str(e)}")
             return
