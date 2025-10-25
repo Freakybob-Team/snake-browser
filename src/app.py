@@ -20,7 +20,7 @@ DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD
 PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
 EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.""")
-home = "https://freakybob.site"
+home = "https://search.freakybob.site"
 response = requests.get(home)
 rawhtml = response.text
 def makeit(self, rawhtml, newurl):
