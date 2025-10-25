@@ -1,30 +1,32 @@
 import requests
-from PyQt5.QtWidgets import QApplication, QMainWindow, QAction
+from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, QLineEdit, QMessageBox
 from PyQt5 import QtWebEngineWidgets
 from PyQt5.QtCore import QUrl
 import sys
 
-response = requests.get("https://freakybob.site")
+newurl = "https://freakybob.site"
+response = requests.get(newurl)
 rawhtml = response.text
-
+def makeit(self, rawhtml, newurl):
+        self.view = QtWebEngineWidgets.QWebEngineView()
+        self.view.setHtml(rawhtml, baseUrl=QUrl(newurl))
+        self.setCentralWidget(self.view)
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle("Snake Browser - By Freakybob Team")
-
-        self.view = QtWebEngineWidgets.QWebEngineView()
-        self.view.setHtml(rawhtml, baseUrl=QUrl("https://freakybob.site/"))
-        self.setCentralWidget(self.view)
-
+        makeit(self, rawhtml, newurl)
         reload_action = QAction("Reload", self)
         reload_action.triggered.connect(self.reload_page)
         back_action = QAction("Back", self)
         back_action.triggered.connect(self.back)
         forward_action = QAction("Forward", self)
         forward_action.triggered.connect(self.forward)
-
+        self.urlbar = QLineEdit()
+        self.urlbar.returnPressed.connect(self.navigate_to_url)
         toolbar = self.addToolBar("TBar")
+        toolbar.addWidget(self.urlbar)
         toolbar.addAction(reload_action)
         toolbar.addAction(back_action)
         toolbar.addAction(forward_action)
@@ -39,6 +41,20 @@ class MainWindow(QMainWindow):
         self.view.back()
     def forward(self):
         self.view.forward()
+    def navigate_to_url(self):
+        inputed = self.urlbar.text()
+        if not inputed.startswith("http"):
+            newurl = "https://" + self.urlbar.text()
+        else:
+            newurl = self.urlbar.text()
+        try:
+            response = requests.get(newurl)
+        except Exception as e:
+            QMessageBox.warning(self, "Error accessing URL", f"URL not found. More information: {str(e)}")
+            return
+        rawhtml = response.text
+        makeit(self, rawhtml, newurl)
+        print(rawhtml)
 
 app = QApplication(sys.argv)
 
