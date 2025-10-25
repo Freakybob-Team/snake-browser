@@ -1,3 +1,8 @@
+"""
+    Snake Browser is licensed under GPL-3.0.
+    2025 Freakybob Team.
+    For information on the LICENSE, read LICENSE or IMPORTANT_LICENSE.
+"""
 import requests
 from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, QLineEdit, QMessageBox
 from PyQt5 import QtWebEngineWidgets
@@ -5,6 +10,15 @@ from PyQt5.QtCore import QUrl
 import sys
 
 print("Snake Browser is starting up! Have fun :) - Licensed under GPL-3.0, by Freakybob Team.")
+print("""  IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS
+THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
+GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
+USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF
+DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD
+PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
+EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.""")
 home = "https://freakybob.site"
 response = requests.get(home)
 rawhtml = response.text
