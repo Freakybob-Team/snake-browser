@@ -8,8 +8,9 @@ import webbrowser
 def check(version, self):
     print("Snake is checking for updates...")
     try:
-        response = urllib.request.urlopen('https://raw.githubusercontent.com/Freakybob-Team/snake-browser/refs/heads/main/update/version.txt')
-        content = response.read()
+        response = urllib.request.urlopen('https://freakybob-team.github.io/snake-browser/update/version.txt')
+        content = int(response.read())
+        print(content)
     except Exception as e:
         print(f"Whoa! The update server could not be reached, try again later {e}")
         return
