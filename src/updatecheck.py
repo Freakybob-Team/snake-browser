@@ -9,14 +9,13 @@ def check(version, self):
     print("Snake is checking for updates...")
     try:
         response = urllib.request.urlopen('https://freakybob-team.github.io/snake-browser/update/version.txt')
-        content = int(response.read())
-        print(content)
+        content = response.read().decode().strip()
     except Exception as e:
         print(f"Whoa! The update server could not be reached, try again later {e}")
         return
     if content == "429: Too Many Requests For more on scraping GitHub and how it may affect your rights, please review our Terms of Service (https://docs.github.com/en/site-policy/github-terms/github-terms-of-service).":
         print("Your access to GitHub was blocked for some reason. Try disabling your VPN.")
-    if int(content) > int(version):
+    if content > version:
         # do popup with pyqt?
         # sure just hold on
         print(content)
