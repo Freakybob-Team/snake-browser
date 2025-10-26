@@ -12,6 +12,9 @@ from PyQt6.QtGui import QAction
 import sys
 import re
 import os
+from settings import SettingsWindow
+
+version = "b1.0" # the snake browser version, when updating the snake browser, please change this - mpax235
 
 gpc_use = None
 if not os.path.exists("settings/"):
@@ -25,7 +28,7 @@ with open("settings/gpc.txt") as file:
     if file.read() == "0":
         gpc_use = False
 
-print("Snake Browser is starting up! Have fun :) - Licensed under GPL-3.0, by Freakybob Team.")
+print("Snake Browser is starting up! Have fun :) - Licensed under GPL-3.0, by Freakybob Team. (if you are reading this i managed to sneak this in hahaha)")
 print("""  IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
 WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS
 THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
@@ -37,7 +40,7 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.""")
 
 home = "https://search.freakybob.site"
-response = requests.get(home, headers={"Sec-GPC": "1"})
+response = requests.get(home, headers={"Sec-GPC": "1", "User-Agent": f"SnakeBrowser/{version}"})
 rawhtml = response.text
 
 def makeit(self, rawhtml, newurl):
@@ -66,8 +69,8 @@ class MainWindow(QMainWindow):
         forward_action.triggered.connect(self.forward)
         home_action = QAction("Home", self)
         home_action.triggered.connect(self.home)
-        gpc_action = QAction("Toggle GPC", self)
-        gpc_action.triggered.connect(self.gpc)
+        settings_action = QAction("Settings", self)
+        settings_action.triggered.connect(self.settings)
         self.urlbar = QLineEdit()
         self.urlbar.returnPressed.connect(self.navigate_to_url)
         toolbar = self.addToolBar("TBar")
@@ -76,7 +79,7 @@ class MainWindow(QMainWindow):
         toolbar.addAction(back_action)
         toolbar.addAction(forward_action)
         toolbar.addAction(home_action)
-        toolbar.addAction(gpc_action)
+        toolbar.addAction(settings_action)
         #view = QtWebEngineWidgets.QWebEngineView()
         #view.setHtml(rawhtml, baseUrl=QUrl("https://freakybob.site/"))
         #self.setCentralWidget(view)
@@ -90,22 +93,14 @@ class MainWindow(QMainWindow):
     def forward(self):
         self.view.forward()
 
-    def gpc(self):
-        global gpc_use
-        if gpc_use == False:
-            gpc_use = True
-            QMessageBox.warning(self, "GPC Setting Changed", "Your GPC setting has changed to on.")
-            with open("settings/gpc.txt", "w") as file:
-                file.write("1")
-        else:
-            gpc_use = False
-            QMessageBox.warning(self, "GPC Setting Changed", "Your GPC setting has changed to off.")
-            with open("settings/gpc.txt", "w") as file:
-                file.write("0")
+    def settings(self):
+        settingswindow = SettingsWindow(self)
+        settingswindow.exec()
+        # jesus christ you type fast okay should be fixed works but the css is REALLY ugly
 
     def home(self):
         if gpc_use == True:
-            response = requests.get(home, headers={"Sec-GPC": "1"})
+            response = requests.get(home, headers={"Sec-GPC": "1", "User-Agent": "SnakeBrowser/b1.1"})
         else:
             response = requests.get(home)
         rawhtml = response.text
@@ -119,7 +114,7 @@ class MainWindow(QMainWindow):
             newurl = inputed
         try:
             if gpc_use == True:
-                response = requests.get(newurl, headers={"Sec-GPC": "1"})
+                response = requests.get(newurl, headers={"Sec-GPC": "1", "User-Agent": f"SnakeBrowser/{version}"})
             else:
                 response = requests.get(newurl)
         except Exception as e:

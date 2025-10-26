@@ -1,0 +1,11 @@
+* {
+    text-align: center;
+}
+QPushButton {
+    background-color: #4c7eff;
+    color: white;
+    text-align: center;
+}
+QLabel {
+    font-weight: 90px;
+}
