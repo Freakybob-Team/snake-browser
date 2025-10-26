@@ -24,6 +24,7 @@ with open("settings/gpc.txt") as file:
         gpc_use = True
     if file.read() == "0":
         gpc_use = False
+
 print("Snake Browser is starting up! Have fun :) - Licensed under GPL-3.0, by Freakybob Team.")
 print("""  IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
 WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS
@@ -34,19 +35,23 @@ DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD
 PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
 EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.""")
+
 home = "https://search.freakybob.site"
 response = requests.get(home, headers={"Sec-GPC": "1"})
 rawhtml = response.text
+
 def makeit(self, rawhtml, newurl):
         self.view = QtWebEngineWidgets.QWebEngineView()
         self.view.setHtml(rawhtml, baseUrl=QUrl(newurl))
         self.setCentralWidget(self.view)
+
 def changeTitle(self, title):
     if title:
         if title == "Snake Browser, by Freakybob Team.":
             self.setWindowTitle("Snake Browser, by Freakybob Team.")
         else:
             self.setWindowTitle(f"{title} - Snake Browser, by Freakybob Team.")
+            
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -78,10 +83,13 @@ class MainWindow(QMainWindow):
 
     def reload_page(self):
         self.view.reload()
+
     def back(self):
         self.view.back()
+
     def forward(self):
         self.view.forward()
+
     def gpc(self):
         global gpc_use
         if gpc_use == False:
@@ -94,7 +102,7 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "GPC Setting Changed", "Your GPC setting has changed to off.")
             with open("settings/gpc.txt", "w") as file:
                 file.write("0")
-        self.view.reload()
+
     def home(self):
         if gpc_use == True:
             response = requests.get(home, headers={"Sec-GPC": "1"})
@@ -102,6 +110,7 @@ class MainWindow(QMainWindow):
             response = requests.get(home)
         rawhtml = response.text
         makeit(self, rawhtml, home)
+
     def navigate_to_url(self):
         inputed = self.urlbar.text()
         if not inputed.startswith("http"):
