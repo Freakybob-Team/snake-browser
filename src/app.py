@@ -5,12 +5,14 @@
 """
 
 import requests
-from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, QLineEdit, QMessageBox
-from PyQt5 import QtWebEngineWidgets
-from PyQt5.QtCore import QUrl
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLineEdit, QMessageBox
+from PyQt6 import QtWebEngineWidgets
+from PyQt6.QtCore import QUrl
+from PyQt6.QtGui import QAction
 import sys
 import re
 import os
+
 gpc_use = None
 if not os.path.exists("settings/"):
     os.mkdir("settings")
@@ -128,4 +130,4 @@ app = QApplication(sys.argv)
 
 window = MainWindow()
 window.show()
-sys.exit(app.exec_())
+sys.exit(app.exec())
