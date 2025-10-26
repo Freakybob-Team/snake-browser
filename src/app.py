@@ -62,7 +62,7 @@ class MainWindow(QMainWindow):
 
         changeTitle(self, title="FreakySearch")
         makeit(self, rawhtml, newurl=home)
-        check(version)
+        check(version, self)
         
         reload_action = QAction("Reload", self)
         reload_action.triggered.connect(self.reload_page)
