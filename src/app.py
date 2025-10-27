@@ -13,6 +13,7 @@ import sys
 import re
 import os
 from settings import SettingsWindow
+import urllib.request, urllib.parse
 try:
     from updatecheck import check
 except:
@@ -24,10 +25,15 @@ gpc_use = None
 
 if not os.path.exists("settings/"):
     os.mkdir("settings")
+if not os.path.exists("downloads/"):
+    os.mkdir("downloads")
 if not os.path.exists("settings/gpc.txt"):
     with open("settings/gpc.txt", "w") as file:
         file.write("1")
-with open("settings/gpc.txt") as file:
+if not os.path.exists("settings/aed.txt"):
+    with open("settings/aed.txt", "w") as file:
+        file.write("1")
+with open("settings/gpc.txt", "r") as file:
     if file.read() == "1":
         gpc_use = True
     if file.read() == "0":
@@ -131,7 +137,22 @@ class MainWindow(QMainWindow):
                 file.close()
 
     def navigate_to_url(self):
+        with open("settings/aed.txt", "r") as file:
+            aedsetting = file.read()
+        file_extensions = [".mp3", ".png", ".zip", ".exe", ".dmg"]
+        executable_extensions = [".exe", ".zip", ".dmg"]
         inputed = self.urlbar.text()
+        path = urllib.parse.urlsplit(inputed).path
+        extension = os.path.splitext(path)[-1] 
+        filename = os.path.basename(path)
+        if extension in file_extensions:
+            if aedsetting == "0" and extension in executable_extensions:
+                QMessageBox.warning(self, "Failed to download!", f"You attempted to download a file that is a .exe, .zip, or .dmg, and you have your Allow Executable Downloads off. To download this, turn it on.")
+                return
+            print("Downloading!")
+            urllib.request.urlretrieve(inputed, "downloads/" + filename)
+            QMessageBox.warning(self, "Downloaded!", f"A file was downloaded to your downloads folder. You can access it as downloads/{filename} (with downloads being the one in your Snake folder). If you don't recognize it, please delete it!")
+            return
         if not inputed.startswith("http"):
             newurl = "https://" + self.urlbar.text()
         else:

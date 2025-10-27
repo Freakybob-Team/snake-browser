@@ -39,6 +39,9 @@ class SettingsWindow(QDialog):
         self.gpcbtn.clicked.connect(self.gpc)
         self.cssbtn = QPushButton("Custom CSS (.qss)", self)
         self.cssbtn.clicked.connect(self.openFileDialog)
+        self.daebtn = QPushButton("Toggle Allowing Executable Downloads")
+        self.daebtn.clicked.connect(self.toggledae)
+        layout_1.addWidget(self.daebtn)
         layout_1.addWidget(self.gpcbtn)
         layout_1.addWidget(self.cssbtn)
         layout.addLayout(layout_1)
@@ -76,3 +79,14 @@ class SettingsWindow(QDialog):
             with open("COHQSS.txt", "w") as file:
                 file.write(thing)
             app.setStyleSheet(thing)
+
+    def toggledae(self):
+        with open("settings/aed.txt", "r") as file:
+            daecontrol = file.read()
+        with open("settings/aed.txt", "w") as file:
+            if daecontrol == "1":
+                file.write("0")
+                QMessageBox.warning(self, "AED Setting Changed", "Your Allow Executable Downloads setting has been changed to off. You can not download executables from websites.")
+            if daecontrol == "0":
+                file.write("1")
+                QMessageBox.warning(self, "AED Setting Changed", "Your Allow Executable Downloads setting has been changed to on. You can download executables from websites.")
