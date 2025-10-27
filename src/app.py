@@ -88,9 +88,12 @@ class MainWindow(QMainWindow):
         toolbar.addAction(forward_action)
         toolbar.addAction(home_action)
         toolbar.addAction(settings_action)
-        #view = QtWebEngineWidgets.QWebEngineView()
-        #view.setHtml(rawhtml, baseUrl=QUrl("https://freakybob.site/"))
-        #self.setCentralWidget(view)
+        try:
+            with open('qss/amoled.qss', 'r') as f:
+                style = f.read()
+                app.setStyleSheet(style)
+        except:
+            print("QSS file not found. Styling will not be on.")
 
     def reload_page(self):
         self.view.reload()

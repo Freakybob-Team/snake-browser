@@ -1,0 +1,7 @@
+* {
+    color: white;
+    background-color: #000000;
+}
+QLineEdit {
+    background-color: gray;
+}
