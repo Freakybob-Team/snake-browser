@@ -7,7 +7,7 @@
 import requests
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLineEdit, QMessageBox
 from PyQt6 import QtWebEngineWidgets
-from PyQt6.QtCore import QUrl
+from PyQt6.QtCore import QUrl, QTimer
 from PyQt6.QtGui import QAction
 import sys
 import re
@@ -19,8 +19,9 @@ except:
     print("Update Checker not found.")
 
 version = "1.1" # the snake browser version, when updating the snake browser, please change this - mpax235
-
+app = QApplication(sys.argv)
 gpc_use = None
+
 if not os.path.exists("settings/"):
     os.mkdir("settings")
 if not os.path.exists("settings/gpc.txt"):
@@ -94,6 +95,9 @@ class MainWindow(QMainWindow):
                 app.setStyleSheet(style)
         except:
             print("QSS file not found. Styling will not be on.")
+        timer = QTimer()
+        timer.timeout.connect(self.checkforqss)
+        timer.start(5)
 
     def reload_page(self):
         self.view.reload()
@@ -116,6 +120,15 @@ class MainWindow(QMainWindow):
             response = requests.get(home)
         rawhtml = response.text
         makeit(self, rawhtml, home)
+
+    def checkforqss():
+        if os.path.exists("COHQSS.txt"):
+            print("File found")
+            with open("COHQSS.txt", "r") as file:
+                cqss = file.read()
+                app.setStyleSheet(cqss)
+                print("Stylesheet set!")
+                file.close()
 
     def navigate_to_url(self):
         inputed = self.urlbar.text()
@@ -140,8 +153,6 @@ class MainWindow(QMainWindow):
         else:
            changeTitle(self, title="Snake Browser, by Freakybob Team.")
         makeit(self, rawhtml, newurl)
-
-app = QApplication(sys.argv)
 
 window = MainWindow()
 window.show()
