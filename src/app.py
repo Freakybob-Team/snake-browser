@@ -19,7 +19,7 @@ try:
 except:
     print("Update Checker not found.")
 
-version = "1.1" # the snake browser version, when updating the snake browser, please change this - mpax235
+version = "1.2" # the snake browser version, when updating the snake browser, please change this - mpax235
 app = QApplication(sys.argv)
 gpc_use = None
 
@@ -139,7 +139,7 @@ class MainWindow(QMainWindow):
     def navigate_to_url(self):
         with open("settings/aed.txt", "r") as file:
             aedsetting = file.read()
-        file_extensions = [".mp3", ".png", ".zip", ".exe", ".dmg"]
+        file_extensions = [".mp3", ".png", ".zip", ".exe", ".dmg", ".mp4"]
         executable_extensions = [".exe", ".zip", ".dmg"]
         inputed = self.urlbar.text()
         path = urllib.parse.urlsplit(inputed).path
