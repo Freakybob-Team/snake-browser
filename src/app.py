@@ -13,9 +13,12 @@ import sys
 import re
 import os
 from settings import SettingsWindow
-from updatecheck import check
+try:
+    from updatecheck import check
+except:
+    print("Update Checker not found.")
 
-version = "b1.1" # the snake browser version, when updating the snake browser, please change this - mpax235
+version = "1.1" # the snake browser version, when updating the snake browser, please change this - mpax235
 
 gpc_use = None
 if not os.path.exists("settings/"):
@@ -62,8 +65,10 @@ class MainWindow(QMainWindow):
 
         changeTitle(self, title="FreakySearch")
         makeit(self, rawhtml, newurl=home)
-        check(version, self)
-        
+        try:
+            check(version, self)
+        except:
+            print("Update Check not loaded, so Check was not run.")
         reload_action = QAction("Reload", self)
         reload_action.triggered.connect(self.reload_page)
         back_action = QAction("Back", self)

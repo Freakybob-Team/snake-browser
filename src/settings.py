@@ -46,10 +46,12 @@ class SettingsWindow(QDialog):
         layout.addLayout(layout_1)
 
         self.setLayout(layout)
-
-        with open('qss/settings.qss', 'r') as f:
-            style = f.read()
-            app.setStyleSheet(style)
+        try:
+            with open('qss/settings.qss', 'r') as f:
+                style = f.read()
+                app.setStyleSheet(style)
+        except:
+            print("QSS file not found. Styling will not be on.")
         
     def gpc(self):
         with open("settings/gpc.txt", "r") as file:
