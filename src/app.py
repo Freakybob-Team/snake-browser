@@ -13,20 +13,22 @@ import sys
 import re
 import os
 from settings import SettingsWindow
+from pathlib import Path
 import urllib.request, urllib.parse
 try:
     from updatecheck import check
 except:
     print("Update Checker not found.")
 
+downloads_path = str(Path.home() / "Downloads")
 version = "1.2" # the snake browser version, when updating the snake browser, please change this - mpax235
 app = QApplication(sys.argv)
 gpc_use = None
 
 if not os.path.exists("settings/"):
     os.mkdir("settings")
-if not os.path.exists("downloads/"):
-    os.mkdir("downloads")
+if os.path.exists("downloads/"):
+    os.rmdir("downloads")
 if not os.path.exists("settings/gpc.txt"):
     with open("settings/gpc.txt", "w") as file:
         file.write("1")
@@ -139,7 +141,7 @@ class MainWindow(QMainWindow):
     def navigate_to_url(self):
         with open("settings/aed.txt", "r") as file:
             aedsetting = file.read()
-        file_extensions = [".mp3", ".png", ".zip", ".exe", ".dmg", ".mp4"]
+        file_extensions = [".mp3", ".png", ".jpg", ".jpeg", ".zip", ".exe", ".dmg", ".mp4"]
         executable_extensions = [".exe", ".zip", ".dmg"]
         inputed = self.urlbar.text()
         path = urllib.parse.urlsplit(inputed).path
@@ -150,8 +152,8 @@ class MainWindow(QMainWindow):
                 QMessageBox.warning(self, "Failed to download!", f"You attempted to download a file that is a .exe, .zip, or .dmg, and you have your Allow Executable Downloads off. To download this, turn it on.")
                 return
             print("Downloading!")
-            urllib.request.urlretrieve(inputed, "downloads/" + filename)
-            QMessageBox.warning(self, "Downloaded!", f"A file was downloaded to your downloads folder. You can access it as downloads/{filename} (with downloads being the one in your Snake folder). If you don't recognize it, please delete it!")
+            urllib.request.urlretrieve(inputed, str(downloads_path) + "/" + filename)
+            QMessageBox.warning(self, "Downloaded!", f"A file was downloaded to your downloads folder. You can access it in your downloads folder. If you don't recognize it, please delete it!")
             return
         if not inputed.startswith("http"):
             newurl = "https://" + self.urlbar.text()
