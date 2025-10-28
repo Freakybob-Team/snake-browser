@@ -29,6 +29,7 @@ if not os.path.exists("settings/"):
     os.mkdir("settings")
 if os.path.exists("downloads/"):
     os.rmdir("downloads")
+    print("You had the downloads folder still in your Snake path, so I deleted it for you.")
 if not os.path.exists("settings/gpc.txt"):
     with open("settings/gpc.txt", "w") as file:
         file.write("1")
