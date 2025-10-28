@@ -13,16 +13,9 @@ def check(version, self):
     except Exception as e:
         print(f"Whoa! The update server could not be reached, try again later {e}")
         return
-    if content == "429: Too Many Requests For more on scraping GitHub and how it may affect your rights, please review our Terms of Service (https://docs.github.com/en/site-policy/github-terms/github-terms-of-service).":
-        print("Your access to GitHub was blocked for some reason. Try disabling your VPN.")
     if content > version:
-        # do popup with pyqt?
-        # sure just hold on
         print(content)
-        # make it so this always runs on start
-        # ok so theres an issue for devs
-        # if update.txt is b1.0
-        #ew
-        # then do compare see whichone is bigger and get rid of the beta tag instead of just compairng which one 
+        QMessageBox.warning(self, "Update recommended", "An update was found. I'll launch the download page in your default browser now. Snake will still work, but this message will show at startup unless you update.")
         webbrowser.open("https://github.com/Freakybob-Team/snake-browser/releases/latest")
+    else:
         print("You are already up-to-date")

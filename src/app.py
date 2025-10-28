@@ -21,7 +21,7 @@ except:
     print("Update Checker not found.")
 
 downloads_path = str(Path.home() / "Downloads")
-version = "1.2" # the snake browser version, when updating the snake browser, please change this - mpax235
+version = "1.3" # the snake browser version, when updating the snake browser, please change this - mpax235
 app = QApplication(sys.argv)
 gpc_use = None
 
